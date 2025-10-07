@@ -40,3 +40,66 @@ m <- c(16, 17, 19, 15) %>%
   mean()
 m
 
+#Funciones
+
+x<- "hola"
+y<- "untrm"
+
+paste(x,y)
+
+saludo <- function() {
+  
+  
+  x<- "hola"
+  y<- "untrm"
+  paste(x,y)
+  
+}
+
+
+
+
+
+
+#
+saludo2 <- function(quien) {
+  
+  
+  x<- "hola"
+  y<- quien
+  paste(x,y)
+  
+}
+saludo2(quien = "FICA")
+saludo2(quien = "LESLI")
+
+
+
+
+saludo3 <- function(texto, quien) {
+  
+x<- texto
+y<- quien
+paste(x,y)
+  
+}
+saludo3(texto = "como estas", quien = "LESLI")
+
+
+nota <- function(PA, AC, Ex) {
+
+  x<- PA*0.3
+  y<- AC*0.2
+  z<- Ex*0.5
+  x +y +z
+}
+nota (PA = 19, AC= 15 , Ex = 16.2)
+ 
+
+#Crear una funcion para determinar el área de una circunferencia
+el usuario debe seleccionar si es en cm o mm
+
+"area circ" <- function(radio) {
+pi*radio^2
+}
+"area circ"(2)

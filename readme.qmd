@@ -1,5 +1,2 @@
----
-title: "readme"
-format: html
----
-
+repositorio de programacion y analisis de datos 
+> FICA 2025 II
