@@ -30,5 +30,5 @@ fb <- gs %>%
 #1. darle el url
 #2. extraer la informacion de la hoja de calculo
 #3. importar hoja de calculo
-#
+
 

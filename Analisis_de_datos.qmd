@@ -1,0 +1,69 @@
+---
+title: "Análisis de datos"
+author: "Lesli Ortiz Zavaleta"
+format: html
+---
+
+# importar datos 
+```{r}
+
+## base de datos txt
+library(readr)
+fb <- read_csv("C:/Users/User/Downloads/LA MOLINA 2014 POTATO WUE (FB) - fb.csv")
+View(fb)
+
+## base de datos excel
+library(readxl)
+FB <- read_excel("C:/Users/User/Downloads/LA MOLINA 2014 POTATO WUE (FB).xlsx", 
+    sheet = "fb")
+View(FB)
+
+##importar datos sheets
+
+library(googlesheets4)
+library(tidyverse)
+url <-"https://docs.google.com/spreadsheets/d/15r7ZwcZZHbEgltlF6gSFvCTFA-CFzVBWwg3mFlRyKPs/edit?gid=1263018298#gid=1263018298"
+
+gs <-url %>%
+  as_sheets_id()
+fb <- gs %>%
+  range_read("fb")
+
+str(fb)
+```
+# modelo?
+
+> diseño factorial en bloques completos al azar 
+
+
+$$ tubdw = /mu + riego + genotipo + riego*genotipo + bloque + e$$
+```{r}
+
+md <- aov(tubdw ~ riego + geno + riego*geno + bloque, data = fb)
+
+anova(md)
+
+```
+## corregir para la base de datos
+```{r}
+fb <- fb %>%
+  mutate(
+    riego = as.factor(riego),
+    geno = as.factor(geno),
+    bloque = as.factor(bloque)
+  )
+str(fb)
+
+fb <- gs %>%
+  range_read("fb")
+mutate(across(1:4 ~as factor(.)))
+str(fb)
+```
+
+
+```{r}
+
+md <- aov(lfa ~ riego + geno + riego*geno + bloque, data = fb)
+
+anova(md)
+  
