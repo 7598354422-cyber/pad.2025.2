@@ -4,6 +4,7 @@ author: "LESLI ORTIZ ZAVALETA"
 format: html
 ---
 #librerias
+
 ```{r}
 library(tidyverse)
 library(googlesheets4)
@@ -36,6 +37,17 @@ anova(md)
 library(car)
 
 Anova(md)
+```
 
+
+```{r}
+```
+
+
+```{r}
+```
+
+
+```{r}
 ```
 
