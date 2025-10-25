@@ -1,0 +1,120 @@
+---
+title: "Diseños lineales mixtos"
+author: "Lesli Ortiz Zavaleta"
+format: html
+---
+# Pasos para análisis de datos
+
+1. Crear mi diseño experimental => modelo estadistico
+2. Colectar los datos
+3. Importar y verificar los factores
+4. Analisis de Variancia (aov() o lm())
+5. Comparación de medias
+6. Gráfico
+
+# librerias
+
+```{r}
+library(tidyverse)
+library(googlesheets4)
+library(lme4)
+library(emmeans)
+```
+
+# Cargar base de datos
+
+https://docs.google.com/spreadsheets/d/15r7ZwcZZHbEgltlF6gSFvCTFA-CFzVBWwg3mFlRyKPs/edit?gid=1263018298#gid=1263018298
+
+```{r}
+url <- "https://docs.google.com/spreadsheets/d/15r7ZwcZZHbEgltlF6gSFvCTFA-CFzVBWwg3mFlRyKPs/edit?gid=1263018298#gid=1263018298"
+
+gs <- url %>% 
+  as_sheets_id()
+
+fb <- gs %>% 
+  range_read("fb") %>% 
+  mutate(across(1:bloque, ~as.factor(.)))
+
+str(fb)
+```
+
+# Modelo
+
+$$  wue_{tuber} = \mu + bloque + riego + geno + riego*geno + e  $$
+
+# Análisis de variancia
+
+```{r}
+md <- lmer(formula = twue ~ 0 + (1|bloque) + riego*geno
+           , data = fb)
+
+anova(md)
+
+library(car)
+Anova(md)
+
+```
+
+#> full chatgtp
+
+```{r}
+library(lme4)
+library(emmeans)
+library(multcomp)
+library(multcompView)
+library(ggplot2)
+library(dplyr)
+
+# Modelo mixto
+md <- lmer(twue ~ 0 + (1|bloque) + riego*geno, data = fb)
+
+# ANOVA tipo II o III según interés
+library(car)
+Anova(md, type = 3)
+```
+
+```{r}
+# Medias ajustadas para la interacción riego:geno
+emm <- emmeans(md, ~ riego:geno)
+
+# Comparación de medias con ajuste de Tukey
+comp <- pairs(emm, adjust = "tukey")
+
+# Generación de letras de significancia
+letras <- multcomp::cld(emm, adjust = "tukey", Letters = letters)
+letras
+
+```
+
+```{r}
+# Limpieza del data frame con letras
+letras_df <- letras %>%
+  as.data.frame() %>%
+  mutate(riego = factor(riego, levels = unique(fb$riego)),
+         geno = factor(geno, levels = unique(fb$geno)))
+
+```
+
+```{r}
+ggplot(letras_df, aes(x = geno, y = emmean, fill = riego)) +
+  geom_col(position = position_dodge(width = 0.8)) +
+  geom_errorbar(aes(ymin = emmean - SE, ymax = emmean + SE),
+                width = 0.2, position = position_dodge(width = 0.8)) +
+  geom_text(aes(label = .group, y = emmean + SE + 0.05),
+            position = position_dodge(width = 0.8),
+            size = 3, vjust = 0, angle = 90) +
+  labs(x = "Genotipos", y = "TWUE (eficiencia del uso del agua total)",
+       fill = "Riego") +
+  theme_classic(base_size = 14) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+```{r}
+library(inti)
+
+letras_df %>% 
+  plot_smr(x = "geno", y = "emmean", group = "riego"
+           , error = "SE", sig = ".group")
+
+```
+
